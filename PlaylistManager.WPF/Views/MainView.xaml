@@ -1,0 +1,29 @@
+﻿<Window x:Class="PlaylistManager.WPF.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cal="http://www.caliburnproject.org"
+        Title="MainView" Height="650" Width="1127.3" WindowStartupLocation="CenterScreen"
+        cal:Message.Attach="[Event DragEnter] = [Action FilesDraggedOnWindow($eventArgs)]; [Event Drop] = [Action FilesDroppedOnWindow($eventArgs)]" AllowDrop="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="125"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <DataGrid HorizontalAlignment="Stretch" Grid.Row="1" Margin="12,12,12,12" Name="DataGrid" Width="Auto" AutoGenerateColumns="False" ItemsSource="{Binding AudioFiles}" CanUserAddRows="False" CanUserResizeRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path = Tag.Title}" Header="Title" MinWidth="200" MaxWidth="275"/>
+                <DataGridTextColumn Binding="{Binding Path = Tag.Artist}" Header="Artist" MinWidth="200"/>
+                <DataGridTextColumn Binding="{Binding Path = Tag.Album}" Header="Album" MinWidth="200"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" Margin="12" ItemsSource="{Binding Playlists}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path = Name}" Header="Playlist Name" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
