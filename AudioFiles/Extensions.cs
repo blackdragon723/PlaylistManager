@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using PlaylistManager.ApplicationServices.Models;
 
 namespace PlaylistManager.ApplicationServices
 {

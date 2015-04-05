@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using PlaylistManager.ApplicationServices.Models;
 using PlaylistManager.ApplicationServices.Services.Delegates;
 
 namespace PlaylistManager.ApplicationServices.Services.Interfaces
@@ -12,6 +8,7 @@ namespace PlaylistManager.ApplicationServices.Services.Interfaces
     public interface ILibraryService
     {
         event FilesChangedEventHandler OnFilesChanged;
+        event FinishedProcessingEventHandler OnFinishedProcessing;
 
         void AddLibraryFolder(DirectoryInfo dir);
         void AddFile(FileInfo fi);
@@ -25,5 +22,6 @@ namespace PlaylistManager.ApplicationServices.Services.Interfaces
 
         List<DirectoryInfo> LibraryFolders { get; }
         List<AudioFile> LibraryFiles { get; }
+        bool IsProcessing { get; }
     }
 }

@@ -1,19 +1,14 @@
-﻿using PlaylistManager.ApplicationServices.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter.Xml;
-using PlaylistManager.ApplicationServices;
+using PlaylistManager.ApplicationServices.Models;
 using PlaylistManager.ApplicationServices.Services.Delegates;
 using PlaylistManager.ApplicationServices.Services.Interfaces;
 
-namespace PlaylistManager.ApplicationServices
+namespace PlaylistManager.ApplicationServices.Services
 {
     // TODO split into Library Model and LibraryService
     public class LibraryService : ILibraryService
@@ -56,7 +51,7 @@ namespace PlaylistManager.ApplicationServices
         /// <param name="type">The type of change that occured</param>
         protected void FilesChanged(FileChangedType type)
         {
-            if (OnFilesChanged != null)
+            if (OnFilesChanged != null && !IsProcessing)
             {
                 OnFilesChanged(this, new FilesChangedEventArgs(type));
             }  
@@ -131,7 +126,7 @@ namespace PlaylistManager.ApplicationServices
 
         public bool IsProcessing { get; set; }
 
-        public void ProcessDragDrop(string[] paths)
+        public async void ProcessDragDrop(string[] paths)
         {
             IsProcessing = true;
 
@@ -140,26 +135,27 @@ namespace PlaylistManager.ApplicationServices
                 if (path.IsDirectory())
                 {
                     var directory = new DirectoryInfo(path);
-                    ScanDirectory(directory);
+                    await ScanDirectoryAsync(directory);
                 }
                 else
                 {
-                    var fi = new FileInfo(path);
-                    AddFile(fi);
+                    var audioFile = new AudioFile(path);
+                    AddFile(audioFile);
                 }
             }
 
             IsProcessing = false;
             FinishedProcessing();
+            FilesChanged(FileChangedType.Added);
         }
 
-        public event FinishedProcessingEventHandler OnFinishedProceessing;
+        public event FinishedProcessingEventHandler OnFinishedProcessing;
 
         protected void FinishedProcessing()
         {
-            if (OnFinishedProceessing != null)
+            if (OnFinishedProcessing != null)
             {
-                OnFinishedProceessing(this, new EventArgs());
+                OnFinishedProcessing(this, new EventArgs());
             }
         }
 
@@ -172,7 +168,7 @@ namespace PlaylistManager.ApplicationServices
             if (LibraryFiles.Exists(x => x.FileNameWithExtension == file.FileNameWithExtension)) return;
 
             LibraryFiles.Add(file);
-            FilesChanged(FileChangedType.Added);
+            //FilesChanged(FileChangedType.Added);
 
             //  Create individual watcher if file not part of a library directory
             if (LibraryFolders.Count(x => x.FullName == file.ParentDirectory.FullName) == 0)
@@ -285,7 +281,7 @@ namespace PlaylistManager.ApplicationServices
             FilesChanged(FileChangedType.Deleted);
         }
 
-        private async void ScanDirectoryAsync(DirectoryInfo dir)
+        private async Task ScanDirectoryAsync(DirectoryInfo dir)
         {
             var files = await Task.Run(() => EnumerateFolder(dir, AudioFile.SupportedFileExtensions).ToAudioFiles());
             
@@ -293,6 +289,7 @@ namespace PlaylistManager.ApplicationServices
                 LibraryFiles.All(y => x.FileNameWithExtension != y.FileNameWithExtension));
 
             newFiles.ToList().ForEach(AddFile);
+            FilesChanged(FileChangedType.Added);
         }
 
         private void ScanDirectory(DirectoryInfo dir)

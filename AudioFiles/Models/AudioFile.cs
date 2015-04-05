@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-
-namespace PlaylistManager.ApplicationServices
+namespace PlaylistManager.ApplicationServices.Models
 {
     /// <summary>
     /// Encapsulates an audio file and provides methods for manipulation of the metadata

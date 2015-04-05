@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using PlaylistManager.ApplicationServices.Models;
 using PlaylistManager.ApplicationServices.Services.Interfaces;
 
 namespace PlaylistManager.ApplicationServices
@@ -145,7 +145,7 @@ namespace PlaylistManager.ApplicationServices
 
             try
             {
-                System.IO.File.WriteAllText(destFile.FullName, outBuilder.ToString());
+                File.WriteAllText(destFile.FullName, outBuilder.ToString());
             }
             catch (IOException)
             {

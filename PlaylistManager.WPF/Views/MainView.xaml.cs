@@ -1,6 +1,4 @@
-﻿using PlaylistManager.WPF.ViewModels;
-
-namespace PlaylistManager.WPF.Views
+﻿namespace PlaylistManager.WPF.Views
 {
     /// <summary>
     /// Interaction logic for MainView.xaml

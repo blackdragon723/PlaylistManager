@@ -1,6 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.IO;
-using System.Security.Cryptography;
+﻿using System.IO;
+using Newtonsoft.Json;
 
 namespace PlaylistManager.ApplicationServices
 {

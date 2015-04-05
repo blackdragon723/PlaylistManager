@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using Caliburn.Micro;
 using Castle.Core;
-using Castle.Windsor;
 using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using PlaylistManager.ApplicationServices;
+using PlaylistManager.ApplicationServices.Services;
 using PlaylistManager.ApplicationServices.Services.Interfaces;
 using PlaylistManager.WPF.ViewModels;
 using PlaylistManager.WPF.ViewModels.Interfaces;
-using PlaylistManager.WPF.Views;
 
 namespace PlaylistManager.WPF
 {
@@ -63,7 +62,7 @@ namespace PlaylistManager.WPF
                 .ForEach(property => property.SetValue(instance, _windsorContainer.Resolve(property.PropertyType), null));
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
+        protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<IMainViewModel>();
         }

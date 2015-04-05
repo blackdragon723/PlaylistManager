@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using PlaylistManager.ApplicationServices;
+using PlaylistManager.ApplicationServices.Models;
 
 namespace PlaylistManager.WPF
 {

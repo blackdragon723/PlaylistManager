@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
+using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
 using PlaylistManager.ApplicationServices;
+using PlaylistManager.ApplicationServices.Models;
+using PlaylistManager.ApplicationServices.Services;
 using PlaylistManager.ApplicationServices.Services.Interfaces;
 using PlaylistManager.WPF.ViewModels.Interfaces;
-using System.Threading.Tasks;
 
 namespace PlaylistManager.WPF.ViewModels
 {
@@ -50,6 +49,7 @@ namespace PlaylistManager.WPF.ViewModels
             _playlistService = playlistService;
 
             _libraryService.OnFilesChanged += UpdateAudioFiles;
+            _libraryService.OnFinishedProcessing += OnFinishedProcessing;
         }
 
         private bool _validDragDrop;
@@ -59,6 +59,7 @@ namespace PlaylistManager.WPF.ViewModels
 
             var fileNames = e.Data.GetDropFileNames();
             Task.Run(() => _libraryService.ProcessDragDrop(fileNames));
+            NotifyOfPropertyChange(() => IsProcessing);
         }
 
         private bool ValidateDragDrop(string[] paths)
@@ -81,6 +82,32 @@ namespace PlaylistManager.WPF.ViewModels
             {
                 e.Effects = DragDropEffects.None;
             }
+        }
+
+        public bool CanAddFiles { get { return !_libraryService.IsProcessing; } }
+        public void AddFiles()
+        {
+            var files = DialogFactory.NewOpenFilesDialog(DialogFactory.AudioFilesFilter);
+            if (files == null) return;
+
+            _libraryService.ProcessDragDrop(files);
+        }
+
+        public bool CanAddFolder { get { return !_libraryService.IsProcessing; } }
+
+        public void AddFolder()
+        {
+            var folder = DialogFactory.NewOpenFolderDialog();
+            if (folder == null) return;
+
+            _libraryService.ProcessDragDrop(new [] {folder});
+        }
+
+        public bool IsProcessing { get { return _libraryService.IsProcessing; } }
+
+        private void OnFinishedProcessing(object sender, EventArgs e)
+        {
+            NotifyOfPropertyChange(() => IsProcessing);
         }
     }
 }
